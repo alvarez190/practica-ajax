@@ -18,8 +18,13 @@ window.addEventListener('load', (ev) => {
         ev.preventDefault();
         clearFields();
         let user = await procesarFetch(numsecs.value, numuser.value);
-        printData(user);
-        postUser(user);
+
+        if (user == null || user == undefined) {
+            console.error("No se encuentra el usuario");
+        } else {
+            printData(user.data);
+            postUser(user.data);
+        }
     });
 });
 
@@ -58,7 +63,7 @@ async function procesarFetch(numsecs, numuser) {
         })
         .catch(error => console.error("No hay respuesta " + error));
 
-    return user.data;
+    return user;
 }
 
 /**
@@ -66,12 +71,9 @@ async function procesarFetch(numsecs, numuser) {
  * @param {Object} user Datos del usuario obtenidas con GET 
  */
 function printData(user) {
-    if (user == null || user == undefined) {
-        console.error("No se ha encontrado ningun usuario");
-    } else {
-        span_user_id.innerHTML = user.id;
-        span_user_email.innerHTML = user.email;
-    }
+    span_user_id.innerHTML = user.id;
+    span_user_email.innerHTML = user.email;
+
 }
 
 /**
@@ -79,23 +81,19 @@ function printData(user) {
  * @param {Object} user Objeto usuario
  */
 async function postUser(user) {
-    if (user == null || user == undefined) {
-        console.error("No se ha encontrado ningun usuario");
-    } else {
-        const options_fetch = {
-            method: "POST",
-            headers: {
-                "Content-type": "aplication/json; charset=UTF-8"
-            },
-            body: JSON.stringify(user)
-        }
-        fetch(POSTMAN_URL, options_fetch)
-            .then(res => res.json())
-            .catch(error => console.error('Error:', error))
-            .then(response => {
-                span_user_name.innerHTML = user.first_name;
-                span_status.innerHTML = "200";
-                console.log('Success:', response)
-            });
+    const options_fetch = {
+        method: "POST",
+        headers: {
+            "Content-type": "aplication/json; charset=UTF-8"
+        },
+        body: JSON.stringify(user)
     }
+    fetch(POSTMAN_URL, options_fetch)
+        .then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => {
+            span_user_name.innerHTML = user.first_name;
+            span_status.innerHTML = "200";
+            console.log('Guardado:', response)
+        });
 }
