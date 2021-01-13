@@ -54,8 +54,9 @@ async function procesarFetch(numsecs, numuser) {
         })
         .then(response => {
             user = response;
+            console.log("Respuesta conseguida.");
         })
-        .catch(error => console.error(error));
+        .catch(error => console.error("No hay respuesta " + error));
 
     return user.data;
 }
