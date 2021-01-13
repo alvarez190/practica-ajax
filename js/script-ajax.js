@@ -45,11 +45,9 @@ function clearFields() {
  * @returns Usuario
  */
 async function procesarFetch(numsecs, numuser) {
-    let user;
+    let link_request = numuser + "?delay=" + numsecs;
 
-    let link_user = numuser + "?delay=" + numsecs;
-
-    await fetch(BASE_URL + link_user)
+    let user = await fetch(BASE_URL + link_request)
         .then(response => {
             if (response.status == "404") {
                 span_status.innerHTML = response.status;
@@ -57,10 +55,7 @@ async function procesarFetch(numsecs, numuser) {
                 return response.json()
             }
         })
-        .then(response => {
-            user = response;
-            console.log("Respuesta conseguida.");
-        })
+        .then(response => response)
         .catch(error => console.error("No hay respuesta " + error));
 
     return user;
